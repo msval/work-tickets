@@ -1,0 +1,6 @@
+docker run --name ticket-cassandra -d cassandra:3.0.11
+docker run --name ticket-cassandra2 -d -e CASSANDRA_SEEDS="$(docker inspect --format='{{ .NetworkSettings.IPAddress }}' ticket-cassandra)" cassandra:3.0.11
+docker run --name ticket-cassandra3 -d -e CASSANDRA_SEEDS="$(docker inspect --format='{{ .NetworkSettings.IPAddress }}' ticket-cassandra)" cassandra:3.0.11
+    
+running CQL commands:
+docker run -it --link ticket-cassandra:cassandra --rm cassandra cqlsh cassandra
