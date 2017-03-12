@@ -5,6 +5,7 @@ import javax.inject._
 import play.api._
 import play.api.mvc._
 import services.CassandraClient
+import scala.collection.JavaConversions._
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -20,11 +21,9 @@ class HomeController @Inject()(cassandraClient: CassandraClient) extends Control
    * a path of `/`.
    */
   def index = Action {
-    val tickets: Array[AnyRef] = cassandraClient.getTickets().all().stream().toArray
+    val projects = cassandraClient.projects()
 
-    val msg = tickets.mkString(",")
-
-    Ok(views.html.index(msg))
+    Ok(views.html.index(projects))
   }
 
 }
