@@ -1,9 +1,0 @@
-@(projects: List[domain.Project])
-
-<h1>Welcome!</h1>
-
-<ul>
-@for(project <- projects) {
-    <li>@project.project - @project.description</li>
-}
-</ul>
