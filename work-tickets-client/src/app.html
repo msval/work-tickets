@@ -1,4 +1,6 @@
 // src/app.html
-<template>  
-<h1>${message}</h1>  
+<template>
+    <div repeat.for="project of projects">
+        ${project.project} - ${project.description}
+    </div>
 </template> 
