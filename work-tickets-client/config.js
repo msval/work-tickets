@@ -17,6 +17,7 @@ System.config({
   },
 
   map: {
+    "aurelia-bootstrap": "github:tochoromero/aurelia-bootstrap@0.1.17",
     "aurelia-bootstrapper": "npm:aurelia-bootstrapper@2.1.1",
     "aurelia-fetch-client": "npm:aurelia-fetch-client@1.1.1",
     "aurelia-framework": "npm:aurelia-framework@1.1.0",
@@ -25,7 +26,9 @@ System.config({
     "aurelia-templating": "npm:aurelia-templating@1.3.0",
     "babel": "npm:babel-core@5.8.38",
     "babel-runtime": "npm:babel-runtime@5.8.38",
+    "bootstrap": "github:twbs/bootstrap@3.3.7",
     "core-js": "npm:core-js@1.2.7",
+    "jquery": "npm:jquery@3.1.1",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.4.1"
     },
@@ -43,6 +46,14 @@ System.config({
     },
     "github:jspm/nodelibs-vm@0.1.0": {
       "vm-browserify": "npm:vm-browserify@0.0.4"
+    },
+    "github:tochoromero/aurelia-bootstrap@0.1.17": {
+      "aurelia-templating-resources": "npm:aurelia-templating-resources@1.3.1",
+      "tether": "npm:tether@1.4.0",
+      "velocity-animate": "npm:velocity-animate@1.4.3"
+    },
+    "github:twbs/bootstrap@3.3.7": {
+      "jquery": "npm:jquery@3.1.1"
     },
     "npm:assert@1.4.1": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
@@ -193,8 +204,15 @@ System.config({
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "vm": "github:jspm/nodelibs-vm@0.1.0"
     },
+    "npm:tether@1.4.0": {
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "systemjs-json": "github:systemjs/plugin-json@0.1.2"
+    },
     "npm:util@0.10.3": {
       "inherits": "npm:inherits@2.0.1",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:velocity-animate@1.4.3": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:vm-browserify@0.0.4": {

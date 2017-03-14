@@ -1,14 +1,15 @@
 // src/app.js
 import {inject} from "aurelia-framework";
 import {HttpClient} from 'aurelia-fetch-client';
+import 'bootstrap';
 
 @inject(HttpClient)
 export class App {
-    projects = [];
 
     constructor(http) {
         this.http = http;
-        this.projects = []
+        this.projects = [];
+        this.year = new Date().getFullYear();
     }
 
     activate() {
