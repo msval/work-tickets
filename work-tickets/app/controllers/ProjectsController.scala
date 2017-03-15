@@ -7,23 +7,19 @@ import play.api.mvc._
 import services.CassandraClient
 import json.Json._
 
-/**
- * This controller creates an `Action` to handle HTTP requests to the
- * application's home page.
- */
 @Singleton
 class ProjectsController @Inject()(cassandraClient: CassandraClient) extends Controller {
 
-  /**
-   * Create an Action to render an HTML page with a welcome message.
-   * The configuration in the `routes` file means that this method
-   * will be called when the application receives a `GET` request with
-   * a path of `/`.
-   */
   def projects = Action {
     val projects = cassandraClient.projects()
 
     Ok(Json.toJson(projects))
+  }
+
+  def tickets(projectId: String) = Action {
+    val tickets = cassandraClient.tickets(projectId)
+
+    Ok(Json.toJson(tickets))
   }
 
 }

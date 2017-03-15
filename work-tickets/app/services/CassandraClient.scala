@@ -1,7 +1,7 @@
 package services
 
 import com.datastax.driver.core.{Cluster, ResultSet, Row, Session}
-import domain.Project
+import domain.{Project, Ticket}
 
 import scala.collection.JavaConversions._
 
@@ -17,9 +17,10 @@ class CassandraClient {
 
   val session: Session = cluster.connect()
 
-  def getTickets(): ResultSet = {
-    session.execute("select * from tickets.tickets")
-  }
+  def tickets(projectId: String): List[Ticket] =
+    session.execute(s"select id, name, description from $keyspace.ticket where project = '$projectId'")
+      .all()
+      .map { row => Ticket(row.getString("id"), row.getString("name"), row.getString("description")) }.toList
 
   def projects(): List[Project] =
     session.execute(s"select project, description from $keyspace.projects where bucket = '$omniBucket'")
