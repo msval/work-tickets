@@ -1,40 +1,7 @@
 <template>
     <require from="bootstrap/css/bootstrap.css"></require>
 
-    <div class="container">
-        <div class="header clearfix">
-            <h3 class="text-muted">Free Time Manager</h3>
-        </div>
-
-        <div class="jumbotron">
-            <h1 class="display-3">What is your focus for today?</h1>
-            <p class="lead">This app helps you manage your time</p>
-            <p><a class="btn btn-lg btn-success" href="#" role="button">Inspire me!</a></p>
-        </div>
-
-        <div class="row marketing">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Project</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr repeat.for="project of projects">
-                    <td></td>
-                    <td>${project.project}</td>
-                    <td>${project.description}</td>
-                    <td><button type="button" class="btn btn-primary">Open</button></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <footer class="footer">
-            <p>© Marko Švaljek ${year}</p>
-        </footer>
-
-    </div>
+    <router-view>
+        <!-- Top level views are rendered here -->
+    </router-view>
 </template>
