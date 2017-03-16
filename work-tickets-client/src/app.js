@@ -6,6 +6,14 @@ import 'bootstrap';
 @inject(HttpClient)
 export class App {
 
+    configureRouter(config, router) {
+        config.map([
+            {route: 'tickets', name: 'tickets', moduleId: 'tickets', nav: false, title: 'Tickets'}
+        ]);
+
+        this.router = router;
+    }
+
     constructor(http) {
         this.http = http;
         this.projects = [];
