@@ -5,26 +5,32 @@
         </div>
 
         <div class="row marketing">
+            <button type="button" class="btn btn-success">New</button>
             <table class="table">
                 <thead>
                 <tr>
                     <th></th>
-                    <th>Project</th>
+                    <th>Id</th>
+                    <th>Name</th>
                     <th>Description</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr repeat.for="project of projects">
+                <tr repeat.for="ticket of tickets">
                     <td></td>
-                    <td>${project.project}</td>
-                    <td>${project.description}</td>
+                    <td>${ticket.id}</td>
+                    <td>${ticket.name}</td>
+                    <td>${ticket.description}</td>
                     <td><button type="button" class="btn btn-primary">Open</button></td>
                 </tr>
                 </tbody>
             </table>
         </div>
-
+        <div class="row">
+            <button type="button" class="btn btn-info" click.delegate="goToHome()">Back</button>
+        </div>
         <footer class="footer">
+            <br/>
             <p>© Marko Švaljek ${year}</p>
         </footer>
 
