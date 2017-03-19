@@ -10,7 +10,12 @@ export class Home {
         this.http = http;
         this.tickets = [];
         this.year = new Date().getFullYear();
-        this.router = router
+        this.router = router;
+        this.isAddOrUpdate = false;
+        this.addOrEditTitle = '';
+        this.ticketName = '';
+        this.ticketDescription = '';
+        this.ticketId = '';
     }
 
     activate() {
@@ -21,5 +26,25 @@ export class Home {
 
     goToHome() {
         this.router.navigateToRoute('home')
+    }
+
+    addNew() {
+        this.isAddOrUpdate = true;
+        this.addOrEditTitle = 'Add';
+        this.ticketName = '';
+        this.ticketDescription = '';
+        this.ticketId = '';
+    }
+
+    edit(ticketId, ticketName, ticketDescription) {
+        this.isAddOrUpdate = true;
+        this.addOrEditTitle = 'Update';
+        this.ticketId = ticketId;
+        this.ticketName = ticketName;
+        this.ticketDescription = ticketDescription;
+    }
+
+    cancelAddOrEdit() {
+        this.isAddOrUpdate = false;
     }
 }

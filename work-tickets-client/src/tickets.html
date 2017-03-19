@@ -5,7 +5,23 @@
         </div>
 
         <div class="row marketing">
-            <button type="button" class="btn btn-success">New</button>
+            <div if.bind="isAddOrUpdate">
+                <h4>${addOrEditTitle}</h4>
+                <br>
+                <form role="form">
+                    <label for="ticketName">Name</label><br/>
+                    <input type="text" name="ticketName" value.bind="ticketName"><br/>
+
+                    <label for="ticketDecription">Description</label><br/>
+                    <input type="text" name="ticketDescription" value.bind="ticketDescription">
+                </form>
+                <br/>
+                <button type="button" class="btn btn-primary" click.delegate="save()">Save</button>
+                <button type="button" class="btn btn-danger" click.delegate="cancelAddOrEdit()">Cancel</button>
+            </div>
+            <button type="button" class="btn btn-success" click.delegate="addNew()" if.bind="!isAddOrUpdate">New</button>
+            <br/>
+            <br/>
             <table class="table">
                 <thead>
                 <tr>
@@ -21,7 +37,7 @@
                     <td>${ticket.id}</td>
                     <td>${ticket.name}</td>
                     <td>${ticket.description}</td>
-                    <td><button type="button" class="btn btn-primary">Open</button></td>
+                    <td><button type="button" class="btn btn-primary" click.delegate="edit(ticket.id, ticket.name, ticket.description)">Edit</button></td>
                 </tr>
                 </tbody>
             </table>
