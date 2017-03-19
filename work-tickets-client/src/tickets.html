@@ -10,14 +10,15 @@
                 <br>
                 <form role="form">
                     <label for="ticketName">Name</label><br/>
-                    <input type="text" name="ticketName" value.bind="ticketName"><br/>
+                    <input type="text" name="ticketName" value.bind="ticketName" class="form-control col-xs-12"><br/>
 
                     <label for="ticketDecription">Description</label><br/>
-                    <input type="text" name="ticketDescription" value.bind="ticketDescription">
+                    <textarea  name="ticketDescription" value.bind="ticketDescription" class="form-control col-xs-12" rows="7"></textarea>
                 </form>
-                <br/>
-                <button type="button" class="btn btn-primary" click.delegate="save()">Save</button>
-                <button type="button" class="btn btn-danger" click.delegate="cancelAddOrEdit()">Cancel</button>
+                <div>
+                    <button type="button" class="btn btn-primary" click.delegate="save()">Save</button>
+                    <button type="button" class="btn btn-danger" click.delegate="cancelAddOrEdit()">Cancel</button>
+                </div>
             </div>
             <button type="button" class="btn btn-success" click.delegate="addNew()" if.bind="!isAddOrUpdate">New</button>
             <br/>
