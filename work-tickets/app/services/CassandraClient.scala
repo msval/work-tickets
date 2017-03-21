@@ -1,9 +1,10 @@
 package services
 
-import com.datastax.driver.core.{Cluster, ResultSet, Row, Session}
+import com.datastax.driver.core.{Cluster, Session}
 import domain.{Project, Ticket}
 
 import scala.collection.JavaConversions._
+import scala.collection.mutable
 
 class CassandraClient {
 
@@ -26,4 +27,22 @@ class CassandraClient {
     session.execute(s"select project, description from $keyspace.projects where bucket = '$omniBucket'")
       .all()
       .map { row => Project(row.getString("project"), row.getString("description")) }.toList
+
+  def addTicket(projectId: String, ticketName: String, ticketDescription: String): Ticket = {
+    val id = session.execute(s"select id from $keyspace.ticket where project = '$projectId' limit 1;")
+      .all().collectFirst{ case row => row.getString("id").split('-')(1).toInt + 1 }.getOrElse(0)
+
+    val ticketId = s"$projectId-$id"
+
+    session.execute(s"insert into $keyspace.ticket(project, id, name, description) values ('$projectId', '$ticketId', '$ticketName', '$ticketDescription')")
+
+    Ticket(ticketId, ticketName, ticketDescription)
+  }
+
+  def updateTicket(projectId: String, ticketId: String, ticketName: String, ticketDescription: String): Ticket = {
+
+    session.execute(s"insert into $keyspace.ticket(project, id, name, description) values ('$projectId', '$ticketId', '$ticketName', '$ticketDescription')")
+
+    Ticket(ticketId, ticketName, ticketDescription)
+  }
 }

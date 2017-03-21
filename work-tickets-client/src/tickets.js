@@ -2,11 +2,12 @@
 import {inject} from "aurelia-framework";
 import {HttpClient} from 'aurelia-fetch-client';
 import { Router } from 'aurelia-router';
+import * as toastr from "toastr";
 
 @inject(HttpClient, Router)
 export class Home {
 
-    constructor(http, router) {
+    constructor(http, router, toastr) {
         this.http = http;
         this.tickets = [];
         this.year = new Date().getFullYear();
@@ -46,5 +47,16 @@ export class Home {
 
     cancelAddOrEdit() {
         this.isAddOrUpdate = false;
+        toastr.info('blah');
+    }
+
+    doAdd() {
+        this.http.fetch('http://localhost:8080/projects/WT/tickets', {
+            method: 'put',
+            body: JSON.stringify({
+                "ticketName": this.ticketName,
+                "ticketDescription": this.ticketDescription
+            })
+        }).then(response => response.json())
     }
 }

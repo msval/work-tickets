@@ -6,6 +6,9 @@ import play.api.libs.json.Json
 import play.api.mvc._
 import services.CassandraClient
 import json.Json._
+import play.api.data._
+import play.api.data.Forms._
+import play.api.data.format.Formats._
 
 @Singleton
 class ProjectsController @Inject()(cassandraClient: CassandraClient) extends Controller {
@@ -20,6 +23,28 @@ class ProjectsController @Inject()(cassandraClient: CassandraClient) extends Con
     val tickets = cassandraClient.tickets(projectId)
 
     Ok(Json.toJson(tickets))
+  }
+
+  case class TicketData(ticketId: Option[String], ticketName: String, ticketDescription: String)
+
+  val addUpdateForm = Form(
+    mapping(
+      "ticketId" -> optional(text),
+      "ticketName" -> text,
+      "ticketDescription" -> text
+    )(TicketData.apply)(TicketData.unapply))
+
+  def add(projectId: String) = Action { implicit request =>
+    val ticket = addUpdateForm.bindFromRequest.bindFromRequest.get
+
+    Ok(Json.toJson(cassandraClient.addTicket(projectId, ticket.ticketName, ticket.ticketDescription)))
+  }
+
+  def update(projectId: String) = Action { implicit request =>
+    println("it's me")
+    val ticket = addUpdateForm.bindFromRequest.bindFromRequest.get
+
+    Ok(Json.toJson(cassandraClient.updateTicket(projectId, ticket.ticketId.get, ticket.ticketName, ticket.ticketDescription)))
   }
 
 }
