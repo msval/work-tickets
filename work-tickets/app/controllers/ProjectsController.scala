@@ -35,14 +35,13 @@ class ProjectsController @Inject()(cassandraClient: CassandraClient) extends Con
     )(TicketData.apply)(TicketData.unapply))
 
   def add(projectId: String) = Action { implicit request =>
-    val ticket = addUpdateForm.bindFromRequest.bindFromRequest.get
+    val ticket = addUpdateForm.bindFromRequest.get
 
     Ok(Json.toJson(cassandraClient.addTicket(projectId, ticket.ticketName, ticket.ticketDescription)))
   }
 
   def update(projectId: String) = Action { implicit request =>
-    println("it's me")
-    val ticket = addUpdateForm.bindFromRequest.bindFromRequest.get
+    val ticket = addUpdateForm.bindFromRequest.get
 
     Ok(Json.toJson(cassandraClient.updateTicket(projectId, ticket.ticketId.get, ticket.ticketName, ticket.ticketDescription)))
   }

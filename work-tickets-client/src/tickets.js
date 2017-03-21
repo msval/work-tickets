@@ -19,10 +19,14 @@ export class Home {
         this.ticketId = '';
     }
 
-    activate() {
+    fetchTickets() {
         return this.http.fetch('http://localhost:8080/projects/WT/tickets')
             .then(response => response.json())
             .then(data => this.tickets = data)
+    }
+
+    activate() {
+        this.fetchTickets();
     }
 
     goToHome() {
@@ -47,16 +51,27 @@ export class Home {
 
     cancelAddOrEdit() {
         this.isAddOrUpdate = false;
-        toastr.info('blah');
     }
 
     doAdd() {
         this.http.fetch('http://localhost:8080/projects/WT/tickets', {
             method: 'put',
-            body: JSON.stringify({
+            body: $.param({
                 "ticketName": this.ticketName,
                 "ticketDescription": this.ticketDescription
-            })
-        }).then(response => response.json())
+            }),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            this.fetchTickets();
+            toastr.info('Created ticket ' + data.id);
+            this.cancelAddOrEdit();
+        })
+        .catch(error => {
+            toastr.error('Error Creating ticket', error);
+        });
     }
 }
