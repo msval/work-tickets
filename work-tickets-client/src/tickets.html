@@ -5,7 +5,7 @@
         </div>
 
         <div class="row marketing">
-            <div if.bind="isAddOrUpdate">
+            <div if.bind="isAdd || isUpdate">
                 <h4>${addOrEditTitle}</h4>
                 <br>
                 <form role="form">
@@ -17,11 +17,12 @@
                     <textarea  name="ticketDescription" value.bind="ticketDescription" class="form-control col-xs-12" rows="7"></textarea>
                 </form>
                 <div>
-                    <button type="button" class="btn btn-primary" click.delegate="doAdd()">Save</button>
+                    <button type="button" class="btn btn-primary" click.delegate="doAdd()" if.bind="isAdd">Add</button>
+                    <button type="button" class="btn btn-primary" click.delegate="doUpdate()" if.bind="isUpdate">Update</button>
                     <button type="button" class="btn btn-danger" click.delegate="cancelAddOrEdit()">Cancel</button>
                 </div>
             </div>
-            <button type="button" class="btn btn-success" click.delegate="addNew()" if.bind="!isAddOrUpdate">New</button>
+            <button type="button" class="btn btn-success" click.delegate="addNew()" if.bind="!(isAdd || isUpdate)">New</button>
             <br/>
             <br/>
             <table class="table">

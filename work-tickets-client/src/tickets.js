@@ -12,7 +12,8 @@ export class Home {
         this.tickets = [];
         this.year = new Date().getFullYear();
         this.router = router;
-        this.isAddOrUpdate = false;
+        this.isUpdate = false;
+        this.isAdd = false
         this.addOrEditTitle = '';
         this.ticketName = '';
         this.ticketDescription = '';
@@ -34,7 +35,7 @@ export class Home {
     }
 
     addNew() {
-        this.isAddOrUpdate = true;
+        this.isAdd = true;
         this.addOrEditTitle = 'Add';
         this.ticketName = '';
         this.ticketDescription = '';
@@ -42,7 +43,7 @@ export class Home {
     }
 
     edit(ticketId, ticketName, ticketDescription) {
-        this.isAddOrUpdate = true;
+        this.isUpdate = true;
         this.addOrEditTitle = 'Update';
         this.ticketId = ticketId;
         this.ticketName = ticketName;
@@ -50,7 +51,8 @@ export class Home {
     }
 
     cancelAddOrEdit() {
-        this.isAddOrUpdate = false;
+        this.isAdd = false;
+        this.isUpdate = false;
     }
 
     doAdd() {
@@ -73,5 +75,28 @@ export class Home {
         .catch(error => {
             toastr.error('Error Creating ticket', error);
         });
+    }
+
+    doUpdate() {
+        this.http.fetch('http://localhost:8080/projects/WT/tickets', {
+            method: 'post',
+            body: $.param({
+                "ticketName": this.ticketName,
+                "ticketDescription": this.ticketDescription,
+                "ticketId": this.ticketId
+            }),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.fetchTickets();
+                toastr.info('Updated ticket ' + data.id);
+                this.cancelAddOrEdit();
+            })
+            .catch(error => {
+                toastr.error('Error Updating ticket', error);
+            });
     }
 }
