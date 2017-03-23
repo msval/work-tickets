@@ -3,16 +3,19 @@
 # ~~~~
 
 # loads projects
-GET     /projects                            controllers.ProjectsController.projects
+GET     /projects                                      controllers.ProjectsController.projects
 
 # loads tickets of specific project
-GET     /projects/:projectId/tickets         controllers.ProjectsController.tickets(projectId)
+GET     /projects/:projectId/tickets                   controllers.ProjectsController.tickets(projectId)
 
 # creates new ticket
-PUT     /projects/:projectId/tickets         controllers.ProjectsController.add(projectId)
+PUT     /projects/:projectId/tickets                   controllers.ProjectsController.add(projectId)
 
 # updates a ticket
-POST     /projects/:projectId/tickets        controllers.ProjectsController.update(projectId)
+POST     /projects/:projectId/tickets                  controllers.ProjectsController.update(projectId)
+
+# deletes ticket
+DELETE   /projects/:projectId/tickets/:ticketId        controllers.ProjectsController.delete(projectId, ticketId)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

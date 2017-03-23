@@ -1,5 +1,6 @@
 package services
 
+import akka.Done
 import com.datastax.driver.core.{Cluster, Session}
 import domain.{Project, Ticket}
 
@@ -45,4 +46,10 @@ class CassandraClient {
 
     Ticket(ticketId, ticketName, ticketDescription)
   }
+
+  def delete(projectId: String, ticketId: String): Done = {
+    session.execute(s"delete from $keyspace.ticket where project = '$projectId' and id = '$ticketId'")
+    Done
+  }
+
 }

@@ -40,7 +40,10 @@
                     <td>${ticket.id}</td>
                     <td>${ticket.name}</td>
                     <td>${ticket.description}</td>
-                    <td><button type="button" class="btn btn-primary" click.delegate="edit(ticket.id, ticket.name, ticket.description)">Edit</button></td>
+                    <td>
+                        <button type="button" class="btn btn-primary" click.delegate="edit(ticket.id, ticket.name, ticket.description)">Edit</button>
+                        <button type="button" class="btn btn-danger" click.delegate="confirmWithDelete(ticket.id)">Delete</button>
+                    </td>
                 </tr>
                 </tbody>
             </table>

@@ -13,7 +13,7 @@ export class Home {
         this.year = new Date().getFullYear();
         this.router = router;
         this.isUpdate = false;
-        this.isAdd = false
+        this.isAdd = false;
         this.addOrEditTitle = '';
         this.ticketName = '';
         this.ticketDescription = '';
@@ -89,14 +89,30 @@ export class Home {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         })
-            .then(response => response.json())
-            .then(data => {
+        .then(response => response.json())
+        .then(data => {
+            this.fetchTickets();
+            toastr.info('Updated ticket ' + data.id);
+            this.cancelAddOrEdit();
+        })
+        .catch(error => {
+            toastr.error('Error Updating ticket', error);
+        });
+    }
+
+    confirmWithDelete(ticketId) {
+        console.log(this.http);
+        if (confirm("Are you sure you want to delete ticket " + ticketId)) {
+            this.http.fetch('http://localhost:8080/projects/WT/tickets/' + ticketId, {
+                method: 'delete'
+            })
+            .then(() => {
                 this.fetchTickets();
-                toastr.info('Updated ticket ' + data.id);
-                this.cancelAddOrEdit();
+                toastr.info('Deleted ticket ' + ticketId);
             })
             .catch(error => {
-                toastr.error('Error Updating ticket', error);
+                toastr.error('Error deleting ticket', error);
             });
+        }
     }
 }

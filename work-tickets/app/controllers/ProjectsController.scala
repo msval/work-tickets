@@ -46,4 +46,10 @@ class ProjectsController @Inject()(cassandraClient: CassandraClient) extends Con
     Ok(Json.toJson(cassandraClient.updateTicket(projectId, ticket.ticketId.get, ticket.ticketName, ticket.ticketDescription)))
   }
 
+  def delete(projectId: String, ticketId: String) = Action {
+    cassandraClient.delete(projectId, ticketId)
+
+    Ok
+  }
+
 }
