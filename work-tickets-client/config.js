@@ -30,6 +30,7 @@ System.config({
     "bootstrap": "github:twbs/bootstrap@3.3.7",
     "core-js": "npm:core-js@1.2.7",
     "jquery": "npm:jquery@3.2.1",
+    "moment": "npm:moment@2.18.1",
     "toastr": "github:CodeSeven/toastr@2.1.3",
     "github:CodeSeven/toastr@2.1.3": {
       "css": "github:systemjs/plugin-css@0.1.33",

@@ -2,6 +2,7 @@ package controllers
 
 import javax.inject._
 
+import domain.TicketState
 import play.api.libs.json.Json
 import play.api.mvc._
 import services.CassandraClient
@@ -25,13 +26,14 @@ class ProjectsController @Inject()(cassandraClient: CassandraClient) extends Con
     Ok(Json.toJson(tickets))
   }
 
-  case class TicketData(ticketId: Option[String], ticketName: String, ticketDescription: String)
+  case class TicketData(ticketId: Option[String], ticketName: String, ticketDescription: String, ticketState: String)
 
   val addUpdateForm = Form(
     mapping(
       "ticketId" -> optional(text),
       "ticketName" -> text,
-      "ticketDescription" -> text
+      "ticketDescription" -> text,
+      "ticketState" -> text
     )(TicketData.apply)(TicketData.unapply))
 
   def add(projectId: String) = Action { implicit request =>
@@ -43,7 +45,13 @@ class ProjectsController @Inject()(cassandraClient: CassandraClient) extends Con
   def update(projectId: String) = Action { implicit request =>
     val ticket = addUpdateForm.bindFromRequest.get
 
-    Ok(Json.toJson(cassandraClient.updateTicket(projectId, ticket.ticketId.get, ticket.ticketName, ticket.ticketDescription)))
+    Ok(Json.toJson(cassandraClient.updateTicket(
+      projectId,
+      ticket.ticketId.get,
+      ticket.ticketName,
+      ticket.ticketDescription,
+      TicketState.withName(ticket.ticketState)
+    )))
   }
 
   def delete(projectId: String, ticketId: String) = Action {

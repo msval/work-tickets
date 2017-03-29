@@ -1,9 +1,11 @@
 <template>
     <div class="container">
+        <require from = "./converters"></require>
+
         <style>
             .table {
-                table-layout: fixed;
-                word-wrap: break-word;
+                word-wrap: normal;
+                table-layout: auto;
             }
         </style>
 
@@ -45,10 +47,12 @@
                 </thead>
                 <tbody>
                 <tr repeat.for="ticket of tickets">
-                    <td>${ticket.id}</td>
+                    <td class="text-nowrap">${ticket.id}</td>
                     <td>${ticket.name}</td>
                     <td>${ticket.description}</td>
-                    <td>
+                    <td>${ticket.state}</td>
+                    <td class="text-nowrap">${ticket.changed_at | dateFormat}</td>
+                    <td class="text-nowrap">
                         <button type="button" class="btn btn-primary" click.delegate="edit(ticket.id, ticket.name, ticket.description)">Edit</button>
                         <button type="button" class="btn btn-danger" click.delegate="confirmWithDelete(ticket.id)">Delete</button>
                     </td>

@@ -1,11 +1,13 @@
 package services
 
+import java.time.Instant
+
 import akka.Done
 import com.datastax.driver.core.{Cluster, Session}
-import domain.{Project, Ticket}
+import domain.TicketState.TicketState
+import domain.{Project, Ticket, TicketState}
 
 import scala.collection.JavaConversions._
-import scala.collection.mutable
 
 class CassandraClient {
 
@@ -20,35 +22,53 @@ class CassandraClient {
   val session: Session = cluster.connect()
 
   def tickets(projectId: String): List[Ticket] =
-    session.execute(s"select id, name, description from $keyspace.ticket where project = '$projectId'")
+    session.execute(s"SELECT id, name, description, state, changed_at FROM $keyspace.ticket where project = '$projectId'")
       .all()
-      .map { row => Ticket(row.getString("id"), row.getString("name"), row.getString("description")) }.toList
+      .map { row => Ticket(
+        row.getString("id"),
+        row.getString("name"),
+        row.getString("description"),
+        TicketState.withName(Option(row.getString("state")) match {
+          case Some(state) => state
+          case _ => TicketState.waiting.toString
+        }),
+        Option(row.getTimestamp("changed_at")) match {
+          case Some(timestamp) => timestamp.toInstant
+          case _ => Instant.now()
+        }
+      )
+      }.toList
 
   def projects(): List[Project] =
-    session.execute(s"select project, description from $keyspace.projects where bucket = '$omniBucket'")
+    session.execute(s"SELECT project, description FROM $keyspace.projects WHERE bucket = '$omniBucket'")
       .all()
       .map { row => Project(row.getString("project"), row.getString("description")) }.toList
 
   def addTicket(projectId: String, ticketName: String, ticketDescription: String): Ticket = {
-    val id = session.execute(s"select id from $keyspace.ticket where project = '$projectId' limit 1;")
+    val id = session.execute(s"SELECT id from $keyspace.ticket WHERE project = '$projectId' limit 1;")
       .all().collectFirst{ case row => row.getString("id").split('-')(1).toInt + 1 }.getOrElse(0)
 
     val ticketId = s"$projectId-$id"
 
-    session.execute(s"insert into $keyspace.ticket(project, id, name, description) values ('$projectId', '$ticketId', '$ticketName', '$ticketDescription')")
+    val changedAt = Instant.now()
+    val ticketState = TicketState.waiting
 
-    Ticket(ticketId, ticketName, ticketDescription)
+    session.execute(s"INSERT INTO $keyspace.ticket(project, id, name, description, state, changed_at) VALUES ('$projectId', '$ticketId', '$ticketName', '$ticketDescription', '$ticketState', '$changedAt')")
+
+    Ticket(ticketId, ticketName, ticketDescription, ticketState, changedAt)
   }
 
-  def updateTicket(projectId: String, ticketId: String, ticketName: String, ticketDescription: String): Ticket = {
+  def updateTicket(projectId: String, ticketId: String, ticketName: String, ticketDescription: String, ticketState: TicketState): Ticket = {
 
-    session.execute(s"insert into $keyspace.ticket(project, id, name, description) values ('$projectId', '$ticketId', '$ticketName', '$ticketDescription')")
+    val changedAt = Instant.now()
 
-    Ticket(ticketId, ticketName, ticketDescription)
+    session.execute(s"INSERT INTO $keyspace.ticket(project, id, name, description, state, changed_at) VALUES ('$projectId', '$ticketId', '$ticketName', '$ticketDescription', '$ticketState', '$changedAt')")
+
+    Ticket(ticketId, ticketName, ticketDescription, ticketState, changedAt)
   }
 
   def delete(projectId: String, ticketId: String): Done = {
-    session.execute(s"delete from $keyspace.ticket where project = '$projectId' and id = '$ticketId'")
+    session.execute(s"DELETE FROM $keyspace.ticket WHERE project = '$projectId' AND id = '$ticketId'")
     Done
   }
 
