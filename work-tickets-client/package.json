@@ -9,6 +9,7 @@
       "aurelia-pal": "npm:aurelia-pal@^1.3.0",
       "aurelia-templating": "npm:aurelia-templating@^1.3.0",
       "bootstrap": "github:twbs/bootstrap@^3.3.7",
+      "enumify": "github:rauschma/enumify@master",
       "jquery": "npm:jquery@^3.1.1",
       "moment": "npm:moment@^2.18.1",
       "toastr": "github:CodeSeven/toastr@^2.1.3"

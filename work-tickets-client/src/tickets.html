@@ -34,7 +34,7 @@
             <button type="button" class="btn btn-success" click.delegate="addNew()" if.bind="!(isAdd || isUpdate)">New</button>
             <br/>
             <br/>
-            <table class="table table-striped table-sm">
+            <table class="table">
                 <thead>
                 <tr>
                     <th>Id</th>
@@ -46,11 +46,16 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr repeat.for="ticket of tickets">
+
+                <tr repeat.for="ticket of tickets" class="${ticket.state == 'in_progress' ? 'active' : ticket.state == 'done' ? 'success' : ticket.state == 'canceled' ? 'info' : ''}">
                     <td class="text-nowrap">${ticket.id}</td>
                     <td>${ticket.name}</td>
                     <td>${ticket.description}</td>
-                    <td>${ticket.state}</td>
+                    <td>
+                        <select value.bind="state" change.delegate="updateState(ticket.id, ticket.name, ticket.description, state)">
+                            <option repeat.for="option of ticketStates">${option}</option>
+                        </select>
+                    </td>
                     <td class="text-nowrap">${ticket.changed_at | dateFormat}</td>
                     <td class="text-nowrap">
                         <button type="button" class="btn btn-primary" click.delegate="edit(ticket.id, ticket.name, ticket.description)">Edit</button>

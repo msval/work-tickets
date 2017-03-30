@@ -3,9 +3,10 @@ import {inject} from "aurelia-framework";
 import {HttpClient} from 'aurelia-fetch-client';
 import { Router } from 'aurelia-router';
 import * as toastr from "toastr";
+import {Enum} from 'enumify';
 
 @inject(HttpClient, Router)
-export class Home {
+export class Tickets {
 
     constructor(http, router, toastr) {
         this.http = http;
@@ -18,6 +19,7 @@ export class Home {
         this.ticketName = '';
         this.ticketDescription = '';
         this.ticketId = '';
+        this.ticketStates = ['waiting', 'in_progress', 'done', 'canceled'];
     }
 
     fetchTickets() {
@@ -50,6 +52,14 @@ export class Home {
         this.ticketDescription = ticketDescription;
     }
 
+    updateState(ticketId, ticketName, ticketDescription, state) {
+        this.ticketId = ticketId;
+        this.ticketName = ticketName;
+        this.ticketDescription = ticketDescription;
+
+        this.doUpdate(state);
+    }
+
     cancelAddOrEdit() {
         this.isAdd = false;
         this.isUpdate = false;
@@ -77,14 +87,20 @@ export class Home {
         });
     }
 
-    doUpdate() {
+    doUpdate(state) {
+        let updateParams = {
+            "ticketName": this.ticketName,
+            "ticketDescription": this.ticketDescription,
+            "ticketId": this.ticketId,
+        };
+
+        if (state) {
+            updateParams["ticketState"] = state;
+        }
+
         this.http.fetch('http://localhost:8080/projects/WT/tickets', {
             method: 'post',
-            body: $.param({
-                "ticketName": this.ticketName,
-                "ticketDescription": this.ticketDescription,
-                "ticketId": this.ticketId
-            }),
+            body: $.param(updateParams),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }

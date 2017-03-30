@@ -29,6 +29,7 @@ System.config({
     "babel-runtime": "npm:babel-runtime@5.8.38",
     "bootstrap": "github:twbs/bootstrap@3.3.7",
     "core-js": "npm:core-js@1.2.7",
+    "enumify": "github:rauschma/enumify@master",
     "jquery": "npm:jquery@3.2.1",
     "moment": "npm:moment@2.18.1",
     "toastr": "github:CodeSeven/toastr@2.1.3",
