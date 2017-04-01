@@ -27,7 +27,7 @@
                 </form>
                 <div>
                     <button type="button" class="btn btn-primary" click.delegate="doAdd()" if.bind="isAdd">Add</button>
-                    <button type="button" class="btn btn-primary" click.delegate="doUpdate()" if.bind="isUpdate">Update</button>
+                    <button type="button" class="btn btn-primary" click.delegate="doUpdate(ticketState)" if.bind="isUpdate">Update</button>
                     <button type="button" class="btn btn-danger" click.delegate="cancelAddOrEdit()">Cancel</button>
                 </div>
             </div>
@@ -52,13 +52,13 @@
                     <td>${ticket.name}</td>
                     <td>${ticket.description}</td>
                     <td>
-                        <select value.bind="state" change.delegate="updateState(ticket.id, ticket.name, ticket.description, state)">
-                            <option repeat.for="option of ticketStates">${option}</option>
+                        <select value.bind="states[ticket.id]" change.delegate="updateState(ticket.id, ticket.name, ticket.description, states[ticket.id])">
+                            <option repeat.for="option of ticketStates" model.bind="option">${option}</option>
                         </select>
                     </td>
                     <td class="text-nowrap">${ticket.changed_at | dateFormat}</td>
                     <td class="text-nowrap">
-                        <button type="button" class="btn btn-primary" click.delegate="edit(ticket.id, ticket.name, ticket.description)">Edit</button>
+                        <button type="button" class="btn btn-primary" click.delegate="edit(ticket.id, ticket.name, ticket.description, ticket.state)">Edit</button>
                         <button type="button" class="btn btn-danger" click.delegate="confirmWithDelete(ticket.id)">Delete</button>
                     </td>
                 </tr>

@@ -28,10 +28,10 @@ class CassandraClient {
         row.getString("id"),
         row.getString("name"),
         row.getString("description"),
-        TicketState.withName(Option(row.getString("state")) match {
-          case Some(state) => state
-          case _ => TicketState.waiting.toString
-        }),
+        Option(row.getString("state")) match {
+          case Some(state) if TicketState.isTicketState(state) => TicketState.withName(state)
+          case _ => TicketState.waiting
+        },
         Option(row.getTimestamp("changed_at")) match {
           case Some(timestamp) => timestamp.toInstant
           case _ => Instant.now()

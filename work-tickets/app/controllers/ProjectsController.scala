@@ -26,14 +26,14 @@ class ProjectsController @Inject()(cassandraClient: CassandraClient) extends Con
     Ok(Json.toJson(tickets))
   }
 
-  case class TicketData(ticketId: Option[String], ticketName: String, ticketDescription: String, ticketState: String)
+  case class TicketData(ticketId: Option[String], ticketName: String, ticketDescription: String, ticketState: Option[String])
 
   val addUpdateForm = Form(
     mapping(
       "ticketId" -> optional(text),
       "ticketName" -> text,
       "ticketDescription" -> text,
-      "ticketState" -> text
+      "ticketState" -> optional(text)
     )(TicketData.apply)(TicketData.unapply))
 
   def add(projectId: String) = Action { implicit request =>
@@ -50,7 +50,7 @@ class ProjectsController @Inject()(cassandraClient: CassandraClient) extends Con
       ticket.ticketId.get,
       ticket.ticketName,
       ticket.ticketDescription,
-      TicketState.withName(ticket.ticketState)
+      TicketState.withName(ticket.ticketState.getOrElse(TicketState.waiting.toString))
     )))
   }
 

@@ -20,12 +20,22 @@ export class Tickets {
         this.ticketDescription = '';
         this.ticketId = '';
         this.ticketStates = ['waiting', 'in_progress', 'done', 'canceled'];
+        this.states = [];
     }
 
     fetchTickets() {
         return this.http.fetch('http://localhost:8080/projects/WT/tickets')
             .then(response => response.json())
-            .then(data => this.tickets = data)
+            .then(data => {
+                this.tickets = data;
+
+                let values = {};
+                data.forEach(function(o){
+                    values[o.id] = o.state;
+                });
+
+                this.states = values;
+            })
     }
 
     activate() {
@@ -44,12 +54,13 @@ export class Tickets {
         this.ticketId = '';
     }
 
-    edit(ticketId, ticketName, ticketDescription) {
+    edit(ticketId, ticketName, ticketDescription, ticketState) {
         this.isUpdate = true;
         this.addOrEditTitle = 'Update';
         this.ticketId = ticketId;
         this.ticketName = ticketName;
         this.ticketDescription = ticketDescription;
+        this.ticketState = ticketState;
     }
 
     updateState(ticketId, ticketName, ticketDescription, state) {
@@ -117,7 +128,6 @@ export class Tickets {
     }
 
     confirmWithDelete(ticketId) {
-        console.log(this.http);
         if (confirm("Are you sure you want to delete ticket " + ticketId)) {
             this.http.fetch('http://localhost:8080/projects/WT/tickets/' + ticketId, {
                 method: 'delete'
