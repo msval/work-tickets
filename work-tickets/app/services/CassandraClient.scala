@@ -3,26 +3,28 @@ package services
 import java.time.Instant
 
 import akka.Done
-import com.datastax.driver.core.{Cluster, Session}
+import com.datastax.driver.core.{Cluster, PreparedStatement, Session, SimpleStatement}
+import com.google.common.util.concurrent.ListenableFuture
 import domain.TicketState.TicketState
 import domain.{Project, Ticket, TicketState}
 
 import scala.collection.JavaConversions._
+
+import msvaljek.cql.CqlStrings._
 
 class CassandraClient {
 
   val keyspace = "tickets"
   private lazy val omniBucket = "all"
 
-  private val cluster = Cluster.builder()
+  implicit val session: Session = Cluster.builder()
     .addContactPoint("172.17.0.3")
     .withPort(9042)
     .build()
-
-  val session: Session = cluster.connect()
+    .connect()
 
   def tickets(projectId: String): List[Ticket] =
-    session.execute(s"SELECT id, name, description, state, changed_at FROM $keyspace.ticket where project = '$projectId'")
+    session.execute("SELECT id, name, description, state, changed_at FROM $keyspace.ticket where project = '$projectId'")
       .all()
       .map { row => Ticket(
         row.getString("id"),

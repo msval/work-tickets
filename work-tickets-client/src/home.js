@@ -10,10 +10,19 @@ export class Home {
         this.http = http;
         this.projects = [];
         this.year = new Date().getFullYear();
-        this.router = router
+        this.router = router;
+        this.messages = [
+            'seal with it',
+            'change is inevitable',
+            '0 is you, 1 is the action',
+            '5 seconds ...'
+        ];
+        this.message = '';
     }
 
     activate() {
+        this.inspireMe();
+
         return this.http.fetch('http://localhost:8080/projects')
             .then(response => response.json())
             .then(data => this.projects = data)
@@ -23,4 +32,7 @@ export class Home {
         this.router.navigateToRoute('tickets')
     }
 
+    inspireMe() {
+        this.message = this.messages[Math.floor(Math.random() * this.messages.length)];
+    }
 }
