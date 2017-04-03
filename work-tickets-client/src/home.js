@@ -12,10 +12,9 @@ export class Home {
         this.year = new Date().getFullYear();
         this.router = router;
         this.messages = [
-            'seal with it',
+            'deal with it',
             'change is inevitable',
-            '0 is you, 1 is the action',
-            '5 seconds ...'
+            '0 is you, 1 is the action'
         ];
         this.message = '';
     }
