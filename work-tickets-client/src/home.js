@@ -12,11 +12,12 @@ export class Home {
         this.year = new Date().getFullYear();
         this.router = router;
         this.messages = [
-            'deal with it',
-            'change is inevitable',
-            '0 is you, 1 is the action'
+            'hello',
+            'what is your focus for today',
+            'oh well'
         ];
         this.message = '';
+        this.messageIndex = 0;
     }
 
     activate() {
@@ -32,6 +33,7 @@ export class Home {
     }
 
     inspireMe() {
-        this.message = this.messages[Math.floor(Math.random() * this.messages.length)];
+        this.messageIndex = (this.messageIndex + 1) % this.messages.length;
+        this.message = this.messages[this.messageIndex];
     }
 }
