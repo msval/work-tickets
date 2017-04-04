@@ -3,14 +3,11 @@ package services
 import java.time.Instant
 
 import akka.Done
-import com.datastax.driver.core.{Cluster, PreparedStatement, Session, SimpleStatement}
-import com.google.common.util.concurrent.ListenableFuture
+import com.datastax.driver.core.{Cluster, Session}
 import domain.TicketState.TicketState
 import domain.{Project, Ticket, TicketState}
 
 import scala.collection.JavaConversions._
-
-import msvaljek.cql.CqlStrings._
 
 class CassandraClient {
 
@@ -24,7 +21,7 @@ class CassandraClient {
     .connect()
 
   def tickets(projectId: String): List[Ticket] =
-    session.execute("SELECT id, name, description, state, changed_at FROM $keyspace.ticket where project = '$projectId'")
+    session.execute(s"SELECT id, name, description, state, changed_at FROM $keyspace.ticket where project = '$projectId'")
       .all()
       .map { row => Ticket(
         row.getString("id"),
