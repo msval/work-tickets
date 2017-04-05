@@ -3,13 +3,20 @@ package services
 import java.time.Instant
 
 import akka.Done
-import com.datastax.driver.core.{Cluster, Session}
+import com.datastax.driver.core.{Cluster, Row, Session}
 import domain.TicketState.TicketState
 import domain.{Project, Ticket, TicketState}
 
 import scala.collection.JavaConversions._
+import msvaljek.cql.CassandraCql._
 
-class CassandraClient {
+import scala.collection.IterableView
+import scala.collection.JavaConverters._
+import scala.concurrent.Future
+
+class TicketsCassandraClient {
+
+  import scala.concurrent.ExecutionContext.Implicits.global
 
   val keyspace = "tickets"
   private lazy val omniBucket = "all"
@@ -20,23 +27,22 @@ class CassandraClient {
     .build()
     .connect()
 
-  def tickets(projectId: String): List[Ticket] =
-    session.execute(s"SELECT id, name, description, state, changed_at FROM $keyspace.ticket where project = '$projectId'")
-      .all()
-      .map { row => Ticket(
-        row.getString("id"),
-        row.getString("name"),
-        row.getString("description"),
-        Option(row.getString("state")) match {
-          case Some(state) if TicketState.isTicketState(state) => TicketState.withName(state)
-          case _ => TicketState.waiting
-        },
-        Option(row.getTimestamp("changed_at")) match {
-          case Some(timestamp) => timestamp.toInstant
-          case _ => Instant.now()
-        }
-      )
-      }.toList
+  def parseRowToTicket(row: Row): Ticket = Ticket(
+    row.getString("id"),
+    row.getString("name"),
+    row.getString("description"),
+    Option(row.getString("state")) match {
+      case Some(state) if TicketState.isTicketState(state) => TicketState.withName(state)
+      case _ => TicketState.waiting
+    },
+    Option(row.getTimestamp("changed_at")) match {
+      case Some(timestamp) => timestamp.toInstant
+      case _ => Instant.now()
+    }
+  )
+
+  def tickets(projectId: String): Future[List[Ticket]] =
+    execute(cql"SELECT id, name, description, state, changed_at FROM tickets.ticket where project = ?", projectId).map(_.asScala.toList.map(parseRowToTicket))
 
   def projects(): List[Project] =
     session.execute(s"SELECT project, description FROM $keyspace.projects WHERE bucket = '$omniBucket'")

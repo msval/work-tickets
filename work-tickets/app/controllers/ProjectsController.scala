@@ -2,17 +2,21 @@ package controllers
 
 import javax.inject._
 
+import play.api._
 import domain.TicketState
 import play.api.libs.json.Json
 import play.api.mvc._
-import services.CassandraClient
+import services.TicketsCassandraClient
 import json.Json._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.data.format.Formats._
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+
+import scala.concurrent.Future
 
 @Singleton
-class ProjectsController @Inject()(cassandraClient: CassandraClient) extends Controller {
+class ProjectsController @Inject()(cassandraClient: TicketsCassandraClient) extends Controller {
 
   def projects = Action {
     val projects = cassandraClient.projects()
@@ -20,10 +24,10 @@ class ProjectsController @Inject()(cassandraClient: CassandraClient) extends Con
     Ok(Json.toJson(projects))
   }
 
-  def tickets(projectId: String) = Action {
-    val tickets = cassandraClient.tickets(projectId)
+  def tickets(projectId: String) = Action.async {
+    val tickets= cassandraClient.tickets(projectId)
 
-    Ok(Json.toJson(tickets))
+    tickets.map(tickets => Ok(Json.toJson(tickets)))
   }
 
   case class TicketData(ticketId: Option[String], ticketName: String, ticketDescription: String, ticketState: Option[String])
