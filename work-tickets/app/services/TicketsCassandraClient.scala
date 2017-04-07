@@ -42,7 +42,7 @@ class TicketsCassandraClient {
   )
 
   def tickets(projectId: String): Future[List[Ticket]] =
-    execute(cql"SELECT id, name, description, state, changed_at FROM tickets.ticket where project = ?", projectId).map(_.asScala.toList.map(parseRowToTicket))
+    execute(cql"SELECT id, name, description, state, changed_at FROM tickets.ticket where project = ?", projectId).map(_.asScala.view.map(parseRowToTicket).toList)
 
   def projects(): List[Project] =
     session.execute(s"SELECT project, description FROM $keyspace.projects WHERE bucket = '$omniBucket'")
