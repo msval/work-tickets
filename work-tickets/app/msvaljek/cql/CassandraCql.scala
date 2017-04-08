@@ -33,9 +33,9 @@ object CassandraCql {
     promise.future
   }
 
-  def execute(statement: Future[PreparedStatement], params: AnyRef*)(implicit executionContext: ExecutionContext, session: Session): Future[ResultSet] = {
+  def execute(statement: Future[PreparedStatement], params: Any*)(implicit executionContext: ExecutionContext, session: Session): Future[ResultSet] = {
     statement.map(
-      _.bind("WT")
+      _.bind(params.map(_.asInstanceOf[AnyRef]) : _*)
     ).flatMap(session.executeAsync(_))
   }
 }
