@@ -11,6 +11,8 @@ import play.api.libs.json.Json
 import play.api.mvc._
 import services.TicketsCassandraClient
 
+import scala.collection.immutable
+
 @Singleton
 class ProjectsController @Inject()(cassandraClient: TicketsCassandraClient) extends Controller {
 
@@ -22,16 +24,16 @@ class ProjectsController @Inject()(cassandraClient: TicketsCassandraClient) exte
       "ticketState" -> optional(text)
     )(TicketData.apply)(TicketData.unapply))
 
-  def projects = Action {
+  def projects: Action[AnyContent] = Action.async {
     val projects = cassandraClient.projects()
 
-    Ok(Json.toJson(projects))
+    projects.map(projects => Ok(Json.toJson(projects)))
   }
 
-  def tickets(projectId: String) = Action.async {
+  def tickets(projectId: String): Action[AnyContent] = Action.async {
     val tickets = cassandraClient.tickets(projectId)
 
-    tickets.map(tickets => Ok(Json.toJson(tickets)))
+    tickets.map((tickets: immutable.Seq[domain.Ticket]) => Ok(Json.toJson(tickets)))
   }
 
   def add(projectId: String) = Action { implicit request =>
@@ -59,5 +61,5 @@ class ProjectsController @Inject()(cassandraClient: TicketsCassandraClient) exte
   }
 
   case class TicketData(ticketId: Option[String], ticketName: String, ticketDescription: String, ticketState: Option[String])
-
+  
 }
