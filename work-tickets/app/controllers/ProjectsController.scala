@@ -61,5 +61,5 @@ class ProjectsController @Inject()(cassandraClient: TicketsCassandraClient) exte
   }
 
   case class TicketData(ticketId: Option[String], ticketName: String, ticketDescription: String, ticketState: Option[String])
-  
+
 }

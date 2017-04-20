@@ -5,11 +5,15 @@ import com.google.common.util.concurrent.{FutureCallback, Futures, ListenableFut
 
 import scala.concurrent.{ExecutionContext, Future, Promise}
 import scala.language.implicitConversions
+import scalacache._
+import guava._
 
 object CassandraCql {
 
+  implicit val scalaCache = ScalaCache(GuavaCache())
+
   implicit class CqlStrings(val context: StringContext) extends AnyVal {
-    def cql(args: Any*)(implicit session: Session): Future[PreparedStatement] = {
+    def cql(args: Any*)(implicit session: Session): Future[PreparedStatement] = caching(args) {
       val statement = new SimpleStatement(context.raw(args: _*))
       session.prepareAsync(statement)
     }
