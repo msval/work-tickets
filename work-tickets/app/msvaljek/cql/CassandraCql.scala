@@ -13,7 +13,7 @@ object CassandraCql {
   implicit val scalaCache = ScalaCache(GuavaCache())
 
   implicit class CqlStrings(val context: StringContext) extends AnyVal {
-    def cql(args: Any*)(implicit session: Session): Future[PreparedStatement] = caching(args) {
+    def cql(args: Any*)(implicit session: Session): Future[PreparedStatement] = caching(context.raw(args: _*)) {
       val statement = new SimpleStatement(context.raw(args: _*))
       session.prepareAsync(statement)
     }
